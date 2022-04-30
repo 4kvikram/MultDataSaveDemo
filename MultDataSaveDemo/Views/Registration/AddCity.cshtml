@@ -1,0 +1,18 @@
+﻿@model CityViewModel
+
+<form asp-controller="Registration" asp-action="AddCity">
+    <div class="modal-body">
+        <div class="row px-3">
+            <div class="col-md-6 mb-3">
+                <label asp-for="@Model.CityName" class="mb-2 text-dark"></label>
+                <input class="form-control " asp-for="@Model.CityName" />
+                <small>
+                    <span asp-validation-for="@Model.CityName" class="text-danger"></span>
+                </small>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn btn-primary" value="Save" />
+    </div>
+</form>

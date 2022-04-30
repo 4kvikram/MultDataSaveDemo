@@ -1,0 +1,31 @@
+﻿@model List<RegistrationViewModel>
+
+<div>
+    <table id="tblregistration"  class="display" style="width:100%">
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Mobile</td>
+                <td>City</td>
+                <td>Date</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var i in Model)
+            {
+                <tr>
+                    <td>@i.Name</td>
+                    <td>@i.Mobile</td>
+                    <td>@i.CityName</td>
+                    <td>@i.Date.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#tblregistration').DataTable();
+} );
+</script>

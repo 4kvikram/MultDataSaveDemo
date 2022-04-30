@@ -1,0 +1,131 @@
+﻿@model RegistrationViewModel
+<form id="Registrationfrom"
+      asp-controller="Registration"
+      asp-action="RegisterUser">
+    <div class="modal-body">
+
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>City</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="Regtbody">
+                <tr>
+                    <td>
+                        <input class="form-control clsname" required asp-for="@Model.Name" />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control clsmobile" required asp-for="@Model.Mobile" />
+                    </td>
+                    <td>
+                        @*<input class="form-control clscity " asp-for="@Model.CityName" />*@
+                        <select class="form-control  clscity" id="slctCity" asp-items="@(new SelectList(ViewBag.CityList,"Id", "CityName"))">
+
+                            <option value='0'>--Select--</option>
+                        </select>
+
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" onclick="AddRow();"><i class="fa fa-plus" aria-hidden="true"></i></a>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <input type="button" class="btn btn-primary" value="Save" onclick="SaveData()" />
+</form>
+ <a  href="/Registration/GetRegistration" hidden id="Registrationlst"></a>
+
+<script>
+    var rowcount = 1;
+    function AddRow() {
+        var ddlCity=$("#slctCity").html();
+        $("#Regtbody").append(`<tr id="rownum${rowcount}">
+                    <td>
+                        <input class="form-control clsname" />
+                    </td>
+                    <td>
+                        <input class="form-control clsmobile"/>
+                    </td>
+                    <td>
+                      <select class="form-control  clscity">
+                      ${ddlCity}
+                        </select>
+                    </td>
+                    <td>
+                      <a class="btn btn-primary" onclick="RemoveRow(${rowcount});"><i class="fa fa-times" aria-hidden="true"></i></a>
+                    </td>
+                </tr>`);
+        rowcount++;
+    }
+
+    function RemoveRow(num) {
+        $(`#rownum${num}`).remove();
+    }
+
+   
+    //$("#Registrationfrom").submit(function () {
+    //    return false;
+    //});
+
+    function SaveData() {
+         var allnames=$('.clsname').map((_,el) => el.value).get();
+         var allmobile=$('.clsmobile').map((_,el) => el.value).get();
+         var allcity=$('.clscity').map((_,el) => el.value).get();
+         console.log(allcity);
+         var List=[];
+         for(var i=0;i<allnames.length;i++)
+         {
+             if(allnames[i]=='' || allmobile[i]=='')
+             {
+                 alert("Value can not be empty");
+                 return;
+             }
+
+             if(allcity[i]=='0')
+             {
+                 alert("Please Select City");
+                 return;
+             }
+             var lst={
+             Name: allnames[i], 
+             Mobile: allmobile[i], 
+             CityId: parseInt(allcity[i])
+             }
+             List.push(lst);
+         }
+        //debugger
+        //var list = [
+        //    { Name: 'vikram abc', Mobile: '123123123', CityId: 1 },
+        //    { Name: 'vikram', Mobile: '123123453123', CityId: 2 }
+        //];
+       
+        console.log(List);
+       // alert(data);
+        $.ajax({
+            type: 'GET',
+            url: '/Registration/SaveRegisterUser',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: { "data": JSON.stringify(List)},
+            success: function (result) {
+              //  alert('Successfully received Data ');
+                console.log(result);
+               // $("#Registrationlst").click();
+                window.location.replace("/Registration/GetRegistration");
+            },
+            error: function () {
+                alert('Failed to receive the Data');
+                console.log('Failed ');
+            }
+        })
+    }
+</script>
